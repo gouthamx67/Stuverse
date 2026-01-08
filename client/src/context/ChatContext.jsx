@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import { io } from "socket.io-client";
+
 import { useAuth } from './AuthContext';
 
 const ChatContext = createContext();
@@ -7,7 +8,7 @@ const ChatContext = createContext();
 export const useChat = () => useContext(ChatContext);
 
 
-const ENDPOINT = 'http://localhost:5000';
+const ENDPOINT = 'https://stuverse.onrender.com';
 let socket;
 
 export const ChatProvider = ({ children }) => {
@@ -23,7 +24,7 @@ export const ChatProvider = ({ children }) => {
 
             socket.on('message received', (newMessage) => {
                 setNewMessages((prev) => [...prev, newMessage]);
-                
+
             });
         }
 
