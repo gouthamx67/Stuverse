@@ -1,5 +1,7 @@
 # Stuverse 🎓
 
+**Live Demo:** [https://stuverse-six.vercel.app/](https://stuverse-six.vercel.app/)
+
 **Stuverse** is a specialized campus community platform designed to serve as a central hub for university students. Built using the **MERN stack** (MongoDB, Express, React, Node.js), it focuses on fostering interaction and mutual aid within a specific university ecosystem.
 
 ## 🚀 Overview
