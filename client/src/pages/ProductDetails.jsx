@@ -45,6 +45,7 @@ const ProductDetails = () => {
 
     const handleContactSeller = async () => {
         if (!user) {
+            alert("Please login to contact the seller!");
             navigate('/login');
             return;
         }
@@ -57,6 +58,11 @@ const ProductDetails = () => {
 
     const submitReview = async (e) => {
         e.preventDefault();
+        if (!user) {
+            alert("Please login to post a review!");
+            navigate('/login');
+            return;
+        }
         try {
             const { data } = await api.post(`/products/${id}/reviews`, reviewForm);
             setReviews([data, ...reviews]);

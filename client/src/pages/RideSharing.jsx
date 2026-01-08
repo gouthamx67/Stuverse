@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, Calendar, Clock, Car, Users, Plus, ArrowRight } from 'lucide-react';
 
 const RideSharing = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [rides, setRides] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filterType, setFilterType] = useState('All'); 
+    const [filterType, setFilterType] = useState('All');
 
     const fetchRides = async () => {
         try {
@@ -26,9 +27,14 @@ const RideSharing = () => {
     }, []);
 
     const handleJoinRide = async (id) => {
+        if (!user) {
+            alert("Please login to join this ride!");
+            navigate('/login');
+            return;
+        }
         try {
             await api.put(`/rides/${id}/join`);
-            
+
             fetchRides();
             alert("Success! You have joined the ride.");
         } catch (error) {
@@ -55,12 +61,23 @@ const RideSharing = () => {
                     <h1 className="gradient-text" style={{ fontSize: '2.5rem', fontWeight: '800' }}>Campus Rides</h1>
                     <p style={{ color: '#94a3b8' }}>Share a cab, find a carpool, travel together.</p>
                 </div>
-                <Link to="/create-ride" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                    onClick={() => {
+                        if (!user) {
+                            alert("Please login to offer or request a ride!");
+                            navigate('/login');
+                        } else {
+                            navigate('/create-ride');
+                        }
+                    }}
+                    className="btn-primary"
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', cursor: 'pointer' }}
+                >
                     <Plus size={18} /> Offer/Request Ride
-                </Link>
+                </button>
             </div>
 
-            
+
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
                 <button
                     onClick={() => setFilterType('All')}
@@ -135,7 +152,7 @@ const RideCard = ({ ride, currentUser, onJoin, onLeave }) => {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '5px 10px', borderRadius: '20px' }}>
                         <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#475569', overflow: 'hidden' }}>
                             {ride.host.avatar && <img src={ride.host.avatar} style={{ width: '100%', height: '100%' }} />}

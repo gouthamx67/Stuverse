@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import { MapPin, Calendar, CheckCircle, Download } from 'lucide-react';
 import MapViewer from '../components/MapViewer';
 
 const LostAndFound = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expandedMapId, setExpandedMapId] = useState(null);
@@ -86,7 +89,20 @@ const LostAndFound = () => {
                         )}
                     </div>
                 </div>
-                <Link to="/report-lost" className="btn-primary">Report Item</Link>
+                <button
+                    onClick={() => {
+                        if (!user) {
+                            alert("Please login to report a lost or found item!");
+                            navigate('/login');
+                        } else {
+                            navigate('/report-lost');
+                        }
+                    }}
+                    className="btn-primary"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                    Report Item
+                </button>
             </div>
 
             {loading ? (

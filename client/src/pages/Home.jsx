@@ -110,7 +110,14 @@ const Home = () => {
                         />
                     </form>
                     <button
-                        onClick={() => setShowPostOptions(true)}
+                        onClick={() => {
+                            if (!user) {
+                                alert("Please login to post listings, rides, or buzz!");
+                                navigate('/login');
+                            } else {
+                                setShowPostOptions(true);
+                            }
+                        }}
                         className="btn-primary"
                         style={{ borderRadius: '50px', whiteSpace: 'nowrap' }}
                     >
@@ -306,4 +313,3 @@ const UnifiedFeedCard = ({ item, navigate }) => {
 };
 
 export default Home;
-

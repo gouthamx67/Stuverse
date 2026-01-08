@@ -65,7 +65,7 @@ const Login = () => {
                         <input
                             type="email"
                             name="email"
-                            placeholder="University Email"
+                            placeholder="Email"
                             className="input-field"
                             style={{ paddingLeft: '2.5rem' }}
                             value={formData.email}

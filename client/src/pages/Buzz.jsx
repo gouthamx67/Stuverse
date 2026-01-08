@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { Send, Heart, Clock } from 'lucide-react';
 
 const Buzz = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState('');
     const [loading, setLoading] = useState(false);
     const [posting, setPosting] = useState(false);
 
-    
+
     const colors = [
-        'linear-gradient(135deg, #6366f1, #a855f7)', 
-        'linear-gradient(135deg, #3b82f6, #06b6d4)', 
-        'linear-gradient(135deg, #f43f5e, #f97316)', 
-        'linear-gradient(135deg, #10b981, #3b82f6)', 
+        'linear-gradient(135deg, #6366f1, #a855f7)',
+        'linear-gradient(135deg, #3b82f6, #06b6d4)',
+        'linear-gradient(135deg, #f43f5e, #f97316)',
+        'linear-gradient(135deg, #10b981, #3b82f6)',
     ];
 
     const fetchPosts = async () => {
@@ -36,11 +38,16 @@ const Buzz = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!user) {
+            alert("Please login to post on Campus Buzz!");
+            navigate('/login');
+            return;
+        }
         if (!newPost.trim()) return;
 
         setPosting(true);
         try {
-            
+
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
             await api.post('/buzz', {
@@ -49,7 +56,7 @@ const Buzz = () => {
             });
 
             setNewPost('');
-            fetchPosts(); 
+            fetchPosts();
         } catch (error) {
             alert("Failed to post");
         } finally {
@@ -58,8 +65,13 @@ const Buzz = () => {
     };
 
     const handleLike = async (id) => {
+        if (!user) {
+            alert("Please login to like buzz posts!");
+            navigate('/login');
+            return;
+        }
         try {
-            
+
             setPosts(prev => prev.map(p => {
                 if (p._id === id) {
                     const isLiked = p.likes.includes(user._id);
@@ -90,7 +102,7 @@ const Buzz = () => {
                 </div>
             </div>
 
-            
+
             <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '3rem' }}>
                 <form onSubmit={handleSubmit}>
                     <textarea
@@ -116,7 +128,7 @@ const Buzz = () => {
                 </form>
             </div>
 
-            
+
             {loading ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8' }}>Listening for whispers...</div>
             ) : (
@@ -129,7 +141,7 @@ const Buzz = () => {
                             position: 'relative',
                             overflow: 'hidden'
                         }}>
-                            
+
                             <div style={{ position: 'absolute', top: '-10px', right: '10px', fontSize: '6rem', opacity: 0.1, fontFamily: 'serif', pointerEvents: 'none' }}>"</div>
 
                             <p style={{

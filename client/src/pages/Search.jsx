@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import { Search as SearchIcon, Filter, X, Plus } from 'lucide-react';
 
 const Search = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const queryParams = new URLSearchParams(location.search);
     const initialQuery = queryParams.get('q') || '';
 
@@ -14,7 +16,7 @@ const Search = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    
+
     const [category, setCategory] = useState('');
     const [type, setType] = useState('');
     const [minPrice, setMinPrice] = useState('');
@@ -28,13 +30,13 @@ const Search = () => {
         if (e) e.preventDefault();
         setLoading(true);
         try {
-            
+
             const params = new URLSearchParams();
             if (query) params.append('keyword', query);
 
             const { data } = await api.get(`/products?keyword=${query}`);
 
-            
+
             let filtered = data;
 
             if (category) filtered = filtered.filter(p => p.category === category);
@@ -44,7 +46,7 @@ const Search = () => {
 
             setProducts(filtered);
 
-            
+
             if (query) {
                 navigate(`/search?q=${query}`, { replace: true });
             }
@@ -71,12 +73,23 @@ const Search = () => {
                     <h1 className="gradient-text" style={{ fontSize: '2.5rem', fontWeight: '800' }}>Marketplace</h1>
                     <p style={{ color: '#94a3b8' }}>Buy, sell, and swap items with other students.</p>
                 </div>
-                <Link to="/create-listing" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                    onClick={() => {
+                        if (!user) {
+                            alert("Please login to sell or swap items!");
+                            navigate('/login');
+                        } else {
+                            navigate('/create-listing');
+                        }
+                    }}
+                    className="btn-primary"
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', cursor: 'pointer' }}
+                >
                     <Plus size={18} /> Sell/Swap Item
-                </Link>
+                </button>
             </div>
 
-            
+
             <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
                 <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
                     <div style={{ position: 'relative', flex: 1 }}>
@@ -94,7 +107,7 @@ const Search = () => {
                     </button>
                 </form>
 
-                
+
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94a3b8' }}>
                         <Filter size={18} />
@@ -154,7 +167,7 @@ const Search = () => {
                 </div>
             </div>
 
-            
+
             {loading ? (
                 <div style={{ textAlign: 'center', color: '#94a3b8' }}>Searching...</div>
             ) : (
