@@ -8,7 +8,9 @@ const ChatContext = createContext();
 export const useChat = () => useContext(ChatContext);
 
 
-const ENDPOINT = 'https://stuverse.onrender.com';
+const ENDPOINT = import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL.replace('/api', '')
+    : 'https://stuverse.onrender.com';
 let socket;
 
 export const ChatProvider = ({ children }) => {
