@@ -12,6 +12,13 @@ const app = express();
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
+// Log environment status (Safe check)
+console.log('--- Environment Check ---');
+console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
+console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+console.log('CLIENT_URL:', process.env.CLIENT_URL || 'Not Set');
+console.log('-------------------------');
+
 app.use(express.json());
 app.use(cors({
     origin: [process.env.CLIENT_URL || 'http://localhost:5173'],
@@ -22,11 +29,14 @@ app.use(passport.initialize());
 
 const connectDB = async () => {
     try {
+        if (!process.env.MONGO_URI) {
+            throw new Error('MONGO_URI is not defined in environment variables');
+        }
         await mongoose.connect(process.env.MONGO_URI);
-        console.log('MongoDB Connected');
+        console.log('✅ MongoDB Connected Successfully');
     } catch (error) {
-        console.error('MongoDB connection error:', error);
-        process.exit(1);
+        console.error('❌ MongoDB Connection Error:', error.message);
+        // Don't exit(1) immediately to allow the '/' route to still work for health checks
     }
 };
 
