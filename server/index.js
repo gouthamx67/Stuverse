@@ -21,7 +21,10 @@ console.log('-------------------------');
 
 app.use(express.json());
 app.use(cors({
-    origin: [process.env.CLIENT_URL || 'http://localhost:5173'],
+    origin: [
+        process.env.CLIENT_URL || 'http://localhost:5173',
+        'https://stuverse-zeta.vercel.app'
+    ],
     credentials: true
 }));
 app.use(cookieParser());
@@ -36,7 +39,7 @@ const connectDB = async () => {
         console.log('✅ MongoDB Connected Successfully');
     } catch (error) {
         console.error('❌ MongoDB Connection Error:', error.message);
-        
+
     }
 };
 
