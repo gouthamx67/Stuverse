@@ -152,7 +152,7 @@ const Signup = () => {
 
 
                 <a
-                    href={`${import.meta.env.VITE_API_URL || 'https://stuverse.onrender.com'}/api/auth/google`}
+                    href={`${(import.meta.env.VITE_API_URL || 'https://stuverse.onrender.com').replace(/\/api$/, '')}/api/auth/google`}
                     style={{
                         display: 'flex',
                         alignItems: 'center',

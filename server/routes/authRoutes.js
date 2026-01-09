@@ -31,12 +31,12 @@ router.get('/google/callback',
         failureRedirect: `${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=google_auth_failed`
     }),
     (req, res) => {
-        
+
         const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET, {
             expiresIn: '30d',
         });
 
-        
+
         res.cookie('jwt', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV !== 'development',
@@ -44,7 +44,37 @@ router.get('/google/callback',
             maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
-        
+
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        res.redirect(`${clientUrl}/?auth=success`);
+    }
+);
+
+router.get('/microsoft', (req, res, next) => {
+    if (!process.env.MICROSOFT_CLIENT_ID || !process.env.MICROSOFT_CLIENT_SECRET) {
+        const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+        return res.redirect(`${clientUrl}/login?error=microsoft_not_configured`);
+    }
+    passport.authenticate('microsoft', { session: false })(req, res, next);
+});
+
+router.get('/microsoft/callback',
+    passport.authenticate('microsoft', {
+        session: false,
+        failureRedirect: `${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=microsoft_auth_failed`
+    }),
+    (req, res) => {
+        const token = jwt.sign({ userId: req.user._id }, process.env.JWT_SECRET, {
+            expiresIn: '30d',
+        });
+
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+
         const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
         res.redirect(`${clientUrl}/?auth=success`);
     }
