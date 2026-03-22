@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { Building2, ArrowRight } from 'lucide-react';
+import INDIAN_UNIVERSITIES from '../data/universities';
 
 const UniversityModal = () => {
     const { user, updateUser } = useAuth();
@@ -83,19 +84,9 @@ const UniversityModal = () => {
                             autoFocus
                         />
                         <datalist id="uni-list-modal">
-                            <option value="Mahindra University" />
-                            <option value="IIT Hyderabad" />
-                            <option value="IIIT Hyderabad" />
-                            <option value="Osmania University" />
-                            <option value="JNTU Hyderabad" />
-                            <option value="BITS Pilani Hyderabad" />
-                            <option value="University of Hyderabad" />
-                            <option value="ISB Hyderabad" />
-                            <option value="NALSAR University of Law" />
-                            <option value="Woxsen University" />
-                            <option value="SRM University" />
-                            <option value="VIT Vellore" />
-                            <option value="Manipal University" />
+                            {INDIAN_UNIVERSITIES.map((uni) => (
+                                <option key={uni} value={uni} />
+                            ))}
                         </datalist>
                     </div>
 

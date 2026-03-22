@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { User, Mail, MapPin, Calendar, Trash2, Edit2, Camera } from 'lucide-react';
+import INDIAN_UNIVERSITIES from '../data/universities';
 
 const Profile = () => {
     const { user, logout, updateUser } = useAuth();
@@ -185,19 +186,9 @@ const Profile = () => {
                                     list="uni-list-profile"
                                 />
                                 <datalist id="uni-list-profile">
-                                    <option value="Mahindra University" />
-                                    <option value="IIT Hyderabad" />
-                                    <option value="IIIT Hyderabad" />
-                                    <option value="Osmania University" />
-                                    <option value="JNTU Hyderabad" />
-                                    <option value="BITS Pilani Hyderabad" />
-                                    <option value="University of Hyderabad" />
-                                    <option value="ISB Hyderabad" />
-                                    <option value="NALSAR University of Law" />
-                                    <option value="Woxsen University" />
-                                    <option value="SRM University" />
-                                    <option value="VIT Vellore" />
-                                    <option value="Manipal University" />
+                                    {INDIAN_UNIVERSITIES.map((uni) => (
+                                        <option key={uni} value={uni} />
+                                    ))}
                                 </datalist>
                             </div>
                         </div>
