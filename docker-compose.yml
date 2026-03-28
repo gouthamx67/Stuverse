@@ -1,0 +1,40 @@
+name: Stuverse
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      # This points your React app directly to the local API Docker container!
+      - VITE_API_URL=http://localhost:4004/api
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./server/.env
+    environment:
+      - MONGO_URI=mongodb://db:27017/stuverse
+      - JWT_SECRET=stuverse_super_secret_key_12345
+    ports:
+      - "4004:4004"
+    depends_on:
+      - db
+
+  db:
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
